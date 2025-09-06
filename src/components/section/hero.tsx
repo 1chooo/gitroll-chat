@@ -65,7 +65,7 @@ export default function Hero() {
                   : "bg-neutral-800 text-neutral-100 hover:bg-neutral-800"
               }`}
             >
-              Start your 7-day trial
+              Start Chatting
               <ArrowRight className="ml-2 size-5 transition-transform duration-300 ease-in-out group-hover:translate-x-1" />
             </Button>
           </Link>
