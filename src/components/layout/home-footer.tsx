@@ -108,7 +108,7 @@ function HomeFooter() {
       </div>
     </div>
   );
-};
+}
 
 export { HomeFooter };
 export default HomeFooter;

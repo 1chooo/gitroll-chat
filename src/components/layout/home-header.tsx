@@ -56,7 +56,6 @@ const buttonVariants = cva(
 );
 
 function HomeHeader() {
-
   return (
     <header className="fixed inset-x-0 top-0 z-40 shadow-sm saturate-100 backdrop-blur-[10px] border-b border-gray-200 dark:border-gray-800">
       <div className="mx-auto flex h-[60px] items-center px-4 sm:px-8">
@@ -78,10 +77,7 @@ function HomeHeader() {
             <DropdownMenuContent className="w-56" align="end" forceMount>
               <DropdownMenuGroup>
                 <DropdownMenuItem className="hover:cursor-pointer" asChild>
-                  <Link
-                    href={`/pricing`}
-                    className="flex items-center"
-                  >
+                  <Link href={`/pricing`} className="flex items-center">
                     Pricing
                   </Link>
                 </DropdownMenuItem>
