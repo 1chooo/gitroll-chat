@@ -37,10 +37,7 @@ export default function Login() {
             </Button>
 
             <p className="text-center text-gray-400">
-              <Link
-                href={`/signin`}
-                className="transition-colors underline"
-              >
+              <Link href={`/signin`} className="transition-colors underline">
                 Go to sign in
               </Link>
             </p>

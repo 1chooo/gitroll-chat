@@ -118,7 +118,9 @@ const features = [
       <div className="absolute inset-0 overflow-hidden">
         <Marquee className="[--duration:25s] absolute top-4">
           <div className="bg-neutral-200/50 dark:bg-neutral-800/50 rounded-lg p-4 border border-neutral-300 dark:border-neutral-700 mr-4 min-w-[280px] min-h-[175px]">
-            <div className="text-neutral-900 dark:text-white font-semibold text-sm">Maria Santos</div>
+            <div className="text-neutral-900 dark:text-white font-semibold text-sm">
+              Maria Santos
+            </div>
             <div className="text-neutral-600 dark:text-neutral-400 text-xs">
               DHL Brazil • São Paulo
             </div>
@@ -133,24 +135,34 @@ const features = [
             <div className="text-neutral-900 dark:text-white font-semibold text-sm">
               Joaquim Oliveira
             </div>
-            <div className="text-neutral-600 dark:text-neutral-400 text-xs">Ex-Founder • Mentor</div>
+            <div className="text-neutral-600 dark:text-neutral-400 text-xs">
+              Ex-Founder • Mentor
+            </div>
             <div className="text-purple-600 dark:text-purple-300 text-xs mt-2">
               ✓ Brazil logistics expert
             </div>
-            <div className="text-yellow-600 dark:text-yellow-300 text-xs">✓ Startup accelerator</div>
+            <div className="text-yellow-600 dark:text-yellow-300 text-xs">
+              ✓ Startup accelerator
+            </div>
           </div>
           <div className="bg-neutral-200/50 dark:bg-neutral-800/50 rounded-lg p-4 border border-neutral-300 dark:border-neutral-700 mr-4 min-w-[280px] min-h-[175px]">
-            <div className="text-neutral-900 dark:text-white font-semibold text-sm">Carla Lima</div>
+            <div className="text-neutral-900 dark:text-white font-semibold text-sm">
+              Carla Lima
+            </div>
             <div className="text-neutral-600 dark:text-neutral-400 text-xs">
               Business Consultant • Rio de Janeiro
             </div>
             <div className="text-purple-600 dark:text-purple-300 text-xs mt-2">
               ✓ Latin American markets
             </div>
-            <div className="text-blue-600 dark:text-blue-300 text-xs">✓ 8 mutual connections</div>
+            <div className="text-blue-600 dark:text-blue-300 text-xs">
+              ✓ 8 mutual connections
+            </div>
           </div>
           <div className="bg-neutral-200/50 dark:bg-neutral-800/50 rounded-lg p-4 border border-neutral-300 dark:border-neutral-700 mr-4 min-w-[280px] min-h-[175px]">
-            <div className="text-neutral-900 dark:text-white font-semibold text-sm">Daniel Kwon</div>
+            <div className="text-neutral-900 dark:text-white font-semibold text-sm">
+              Daniel Kwon
+            </div>
             <div className="text-neutral-600 dark:text-neutral-400 text-xs">
               Supply Chain Director • Seoul
             </div>

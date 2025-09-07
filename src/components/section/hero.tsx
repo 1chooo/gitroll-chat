@@ -52,11 +52,7 @@ export default function Hero() {
         </div>
 
         <div className="flex flex-col gap-4 items-center sm:flex-row sm:gap-6 mt-2">
-          <Link
-            href="/chat"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <Link href="/chat" target="_blank" rel="noopener noreferrer">
             <Button
               size="lg"
               className={`rounded-xl px-10 py-5 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 text-lg ${

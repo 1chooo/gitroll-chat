@@ -28,9 +28,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      <div className="flex-1 space-y-6 p-6">
-        Hi
-      </div>
+      <div className="flex-1 space-y-6 p-6">Hi</div>
     </div>
   );
 }
