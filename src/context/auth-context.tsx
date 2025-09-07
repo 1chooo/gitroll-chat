@@ -1,103 +1,75 @@
-"use client";
-
 import {
   createContext,
   useContext,
   useEffect,
   useState,
-  type ReactNode,
+  ReactNode,
 } from "react";
-import {
-  type User,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signOut,
-  signInWithPopup,
-  type AuthError,
-} from "firebase/auth";
-import { auth, googleProvider } from "@/lib/firebase";
+import firebaseApp from "@/firebase/config";
+import { getAuth, onAuthStateChanged, User } from "firebase/auth";
+import { Shell } from "lucide-react";
+import { useRouter } from "next/navigation";
 
+const auth = getAuth(firebaseApp);
+
+// Define the shape of our context
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string) => Promise<void>;
-  signInWithGoogle: () => Promise<void>;
-  logout: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+// Define default context value
+const defaultContextValue: AuthContextType = {
+  user: null,
+  loading: true,
+};
 
-export function useAuth() {
+// Create the context with the defined type
+export const AuthContext = createContext<AuthContextType>(defaultContextValue);
+
+// Custom hook with proper type inference
+export const useAuthContext = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error(
+      "useAuthContext must be used within an AuthContextProvider",
+    );
   }
   return context;
-}
+};
 
-interface AuthProviderProps {
+// Props interface for the provider component
+interface AuthContextProviderProps {
   children: ReactNode;
 }
 
-export function AuthProvider({ children }: AuthProviderProps) {
+export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    const unsubscribe = onAuthStateChanged(auth, (user: User | null) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
       setLoading(false);
     });
 
-    return unsubscribe;
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
   }, []);
 
-  const signIn = async (email: string, password: string) => {
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-    } catch (error) {
-      const authError = error as AuthError;
-      throw new Error(authError.message);
-    }
-  };
-
-  const signUp = async (email: string, password: string) => {
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-    } catch (error) {
-      const authError = error as AuthError;
-      throw new Error(authError.message);
-    }
-  };
-
-  const signInWithGoogle = async () => {
-    try {
-      await signInWithPopup(auth, googleProvider);
-    } catch (error) {
-      const authError = error as AuthError;
-      throw new Error(authError.message);
-    }
-  };
-
-  const logout = async () => {
-    try {
-      await signOut(auth);
-    } catch (error) {
-      const authError = error as AuthError;
-      throw new Error(authError.message);
-    }
-  };
-
-  const value: AuthContextType = {
-    user,
-    loading,
-    signIn,
-    signUp,
-    signInWithGoogle,
-    logout,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ user, loading }}>
+      {loading ? (
+        <div className="loading-container flex items-center justify-center min-h-screen">
+          <Shell className="w-8 h-8 animate-spin text-neutral-500" />
+        </div>
+      ) : (
+        <>{children}</>
+      )}
+    </AuthContext.Provider>
+  );
 }

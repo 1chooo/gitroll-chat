@@ -53,7 +53,7 @@ export default function Hero() {
 
         <div className="flex flex-col gap-4 items-center sm:flex-row sm:gap-6 mt-2">
           <Link
-            href="https://app.herewegoal.com"
+            href="/chat"
             target="_blank"
             rel="noopener noreferrer"
           >
