@@ -15,12 +15,12 @@ export function CTA() {
         <h2 className="text-4xl md:text-5xl font-semibold">
           Ready to activate weak ties for business expansion?
         </h2>
-        <p className="text-lg text-neutral-300 font-medium max-w-2xl mx-auto">
+        <p className="text-lg text-neutral-700 dark:text-neutral-300 font-medium max-w-2xl mx-auto">
           Unlock hidden opportunities in your network.
         </p>
         <Link
           href="/chat"
-          className="bg-white text-black px-4 py-2 hover:brightness-100 brightness-90 active:scale-[0.98] transition-all rounded-lg font-medium inline-block"
+          className="bg-neutral-900 dark:bg-neutral-50 dark:text-neutral-900 text-neutral-50 px-4 py-2 hover:brightness-100 brightness-90 active:scale-[0.98] transition-all rounded-lg font-medium inline-block"
           role="button"
         >
           Get started

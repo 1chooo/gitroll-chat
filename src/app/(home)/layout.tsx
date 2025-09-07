@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   description: "Unlock Opportunities in Your Network",
 };
 
-export default function RootLayout({
+export default function HomeLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
