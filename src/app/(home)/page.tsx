@@ -1,5 +1,5 @@
 import Hero from "@/components/section/hero";
-import { CTA } from "@/components/section/cta";
+import { CallToAction } from "@/components/section/cta";
 import { FeaturesBento } from "@/components/section/features-bento";
 
 export default function Home() {
@@ -7,7 +7,7 @@ export default function Home() {
     <div className="relative w-full overflow-hidden">
       <Hero />
       <FeaturesBento />
-      <CTA />
+      <CallToAction />
     </div>
   );
 }

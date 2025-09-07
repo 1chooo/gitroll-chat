@@ -2,7 +2,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { DotPattern } from "@/components/magicui/dot-pattern";
 
-export function CTA() {
+function CallToAction() {
   return (
     <section className="py-24 px-8 relative">
       <DotPattern
@@ -29,3 +29,5 @@ export function CTA() {
     </section>
   );
 }
+
+export { CallToAction };
