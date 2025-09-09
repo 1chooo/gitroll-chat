@@ -1,10 +1,27 @@
 "use client";
 
 import Link from "next/link";
-import { useAuthContext } from "@/context/auth-context";
+import { useAuthGuard } from "@/hooks/use-auth-guard";
+import EmailVerification from "@/components/auth/email-verification";
 
 export default function DashboardPage() {
-  const { user } = useAuthContext();
+  const { user, loading, isEmailVerified } = useAuthGuard("/signin", true);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">Loading...</div>
+      </div>
+    );
+  }
+
+  if (user && !isEmailVerified) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4 -mt-20">
+        <EmailVerification />
+      </div>
+    );
+  }
 
   return (
     <div>
