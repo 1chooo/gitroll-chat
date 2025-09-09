@@ -54,7 +54,6 @@ export default function SignUpPage() {
     isPendingEmailPasswordRegistration,
   } = useEmailPasswordRegistration();
 
-
   const formEmailPassword = useForm<z.infer<typeof FormSchemaEmailPassword>>({
     resolver: zodResolver(FormSchemaEmailPassword),
     defaultValues: {
@@ -75,8 +74,6 @@ export default function SignUpPage() {
     await emailPasswordRegistration(data.email, data.password);
   }
 
-
-
   return (
     <div className="min-h-screen flex items-center justify-center p-4 -mt-20">
       <div className="w-full max-w-md space-y-8">
@@ -96,7 +93,7 @@ export default function SignUpPage() {
               </p>
             </div>
           ) : (
-            <EmailVerification 
+            <EmailVerification
               isPendingLogin={isPendingEmailPasswordLogin}
               isPendingRegistration={isPendingEmailPasswordRegistration}
             />

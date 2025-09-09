@@ -10,9 +10,9 @@ interface EmailVerificationProps {
   isPendingRegistration?: boolean;
 }
 
-export default function EmailVerification({ 
-  isPendingLogin = false, 
-  isPendingRegistration = false 
+export default function EmailVerification({
+  isPendingLogin = false,
+  isPendingRegistration = false,
 }: EmailVerificationProps) {
   const { user } = useAuthContext();
   const {
@@ -36,12 +36,11 @@ export default function EmailVerification({
 
   return (
     <div className="w-full flex flex-col items-center gap-4">
-      <h1 className="text-center text-xl font-bold">Email Verification Required</h1>
+      <h1 className="text-center text-xl font-bold">
+        Email Verification Required
+      </h1>
       <p>
-        Hey{" "}
-        <b className="italic underline underline-offset-4">
-          {user.email}
-        </b>{" "}
+        Hey <b className="italic underline underline-offset-4">{user.email}</b>{" "}
         👋
       </p>
       <p className="text-red-600 text-md font-semibold">
@@ -49,9 +48,7 @@ export default function EmailVerification({
       </p>
       <Button
         disabled={
-          isPendingLogin ||
-          isPendingRegistration ||
-          isEmailVerificationPending
+          isPendingLogin || isPendingRegistration || isEmailVerificationPending
         }
         onClick={handleSendVerificationEmail}
       >

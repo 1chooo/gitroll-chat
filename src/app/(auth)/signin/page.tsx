@@ -228,8 +228,9 @@ export default function Home() {
                     </div>
                     {(errorEmailPasswordLogin ||
                       errorEmailPasswordRegistration) && (
-                        <span className="text-red-500 text-center text-sm block mt-4 font-semibold">
-                          {errorEmailPasswordLogin && (() => {
+                      <span className="text-red-500 text-center text-sm block mt-4 font-semibold">
+                        {errorEmailPasswordLogin &&
+                          (() => {
                             switch (errorEmailPasswordLogin) {
                               case "auth/invalid-login-credentials":
                               case "auth/invalid-credential":
@@ -248,10 +249,11 @@ export default function Home() {
                                 return `Login failed: ${errorEmailPasswordLogin}`;
                             }
                           })()}
-                          {errorEmailPasswordRegistration === "auth/email-already-in-use" && 
-                            "This user already exists"}
-                        </span>
-                      )}
+                        {errorEmailPasswordRegistration ===
+                          "auth/email-already-in-use" &&
+                          "This user already exists"}
+                      </span>
+                    )}
                   </form>
                 </Form>
                 <div className="text-center text-sm">
