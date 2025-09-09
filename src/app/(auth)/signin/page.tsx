@@ -229,13 +229,27 @@ export default function Home() {
                     {(errorEmailPasswordLogin ||
                       errorEmailPasswordRegistration) && (
                         <span className="text-red-500 text-center text-sm block mt-4 font-semibold">
-                          {errorEmailPasswordLogin ===
-                            "auth/invalid-login-credentials" &&
-                            "Invalid email or password"}
-                          <br />
-                          {errorEmailPasswordRegistration ===
-                            "auth/email-already-in-use" &&
-                            "This user already exists "}
+                          {errorEmailPasswordLogin && (() => {
+                            switch (errorEmailPasswordLogin) {
+                              case "auth/invalid-login-credentials":
+                              case "auth/invalid-credential":
+                                return "Invalid email or password";
+                              case "auth/user-not-found":
+                                return "No account found with this email address";
+                              case "auth/wrong-password":
+                                return "Incorrect password";
+                              case "auth/invalid-email":
+                                return "Invalid email format";
+                              case "auth/user-disabled":
+                                return "This account has been disabled";
+                              case "auth/too-many-requests":
+                                return "Too many failed attempts. Please try again later";
+                              default:
+                                return `Login failed: ${errorEmailPasswordLogin}`;
+                            }
+                          })()}
+                          {errorEmailPasswordRegistration === "auth/email-already-in-use" && 
+                            "This user already exists"}
                         </span>
                       )}
                   </form>
