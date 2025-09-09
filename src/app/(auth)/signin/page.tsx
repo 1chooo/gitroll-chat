@@ -147,48 +147,15 @@ export default function Home() {
           </div>
         ) : (
           <div className="w-full">
-            <Card className="shadow-xl bg-slate-50 dark:bg-slate-900">
+            <Card className="shadow-xl bg-neutral-100 dark:bg-neutral-800">
               <CardHeader className="text-center">
                 <CardTitle className="text-xl">Welcome back</CardTitle>
-                <CardDescription>Login to your Stonix account</CardDescription>
+                <CardDescription>
+                  Login to your GitRoll Chat account
+                </CardDescription>
               </CardHeader>
 
               <CardContent className=" px-6 pb-6 space-y-6">
-                <div className="grid gap-6">
-                  <div className="space-y-3">
-                    <Button
-                      className="w-full"
-                      type="button"
-                      variant="secondary"
-                      onClick={googleLogin}
-                      disabled={
-                        isPendingGoogleLogin ||
-                        isPendingEmailPasswordLogin ||
-                        isPendingEmailPasswordRegistration ||
-                        isEmailVerificationPending
-                      }
-                    >
-                      {isPendingGoogleLogin ? (
-                        <Shell className="mr-2 h-4 w-4 animate-spin" />
-                      ) : (
-                        <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
-                          <path
-                            fill="currentColor"
-                            d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"
-                          />
-                        </svg>
-                      )}
-                      Sign in with Google
-                    </Button>
-                  </div>
-
-                  <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-                    <span className="relative z-10 px-2 text-muted-foreground">
-                      Or continue with
-                    </span>
-                  </div>
-                </div>
-
                 <Form {...formEmailPassword}>
                   <form className="w-full space-y-6">
                     <FormField
@@ -261,16 +228,16 @@ export default function Home() {
                     </div>
                     {(errorEmailPasswordLogin ||
                       errorEmailPasswordRegistration) && (
-                      <span className="text-red-500 text-center text-sm block mt-4 font-semibold">
-                        {errorEmailPasswordLogin ===
-                          "auth/invalid-login-credentials" &&
-                          "Invalid email or password"}
-                        <br />
-                        {errorEmailPasswordRegistration ===
-                          "auth/email-already-in-use" &&
-                          "This user already exists "}
-                      </span>
-                    )}
+                        <span className="text-red-500 text-center text-sm block mt-4 font-semibold">
+                          {errorEmailPasswordLogin ===
+                            "auth/invalid-login-credentials" &&
+                            "Invalid email or password"}
+                          <br />
+                          {errorEmailPasswordRegistration ===
+                            "auth/email-already-in-use" &&
+                            "This user already exists "}
+                        </span>
+                      )}
                   </form>
                 </Form>
                 <div className="text-center text-sm">

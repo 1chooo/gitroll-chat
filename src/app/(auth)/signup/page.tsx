@@ -102,7 +102,7 @@ export default function SignUpPage() {
             />
           )
         ) : (
-          <Card className="shadow-xl bg-slate-50 dark:bg-slate-900">
+          <Card className="shadow-xl bg-neutral-100 dark:bg-neutral-800">
             <CardContent className="pt-8 px-6 pb-6 space-y-6">
               <h1 className="text-3xl font-semibold  mb-8">Get Started</h1>
 
