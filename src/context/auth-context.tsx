@@ -8,7 +8,6 @@ import {
 import firebaseApp from "@/firebase/config";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import { Shell } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 const auth = getAuth(firebaseApp);
 
