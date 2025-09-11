@@ -105,7 +105,11 @@ export default function DashboardPage() {
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>{leftSidebarOpen ? "Collapse Connections" : "Expand Connections"}</p>
+                <p>
+                  {leftSidebarOpen
+                    ? "Collapse Connections"
+                    : "Expand Connections"}
+                </p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -146,9 +150,9 @@ export default function DashboardPage() {
                         router.push("/signin");
                         return;
                       }
-                      const input = document.createElement('input');
-                      input.type = 'file';
-                      input.accept = '.csv';
+                      const input = document.createElement("input");
+                      input.type = "file";
+                      input.accept = ".csv";
                       input.onchange = (e) => {
                         const file = (e.target as HTMLInputElement).files?.[0];
                         if (file) {
@@ -187,11 +191,12 @@ export default function DashboardPage() {
                           router.push("/signin");
                           return;
                         }
-                        const input = document.createElement('input');
-                        input.type = 'file';
-                        input.accept = '.csv';
+                        const input = document.createElement("input");
+                        input.type = "file";
+                        input.accept = ".csv";
                         input.onchange = (e) => {
-                          const file = (e.target as HTMLInputElement).files?.[0];
+                          const file = (e.target as HTMLInputElement)
+                            .files?.[0];
                           if (file) {
                             uploadCSV(file);
                           }
@@ -204,7 +209,9 @@ export default function DashboardPage() {
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>{user ? "Add Connections" : "Sign in to add connections"}</p>
+                    <p>
+                      {user ? "Add Connections" : "Sign in to add connections"}
+                    </p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -257,9 +264,9 @@ export default function DashboardPage() {
                   return;
                 }
                 // Handle file upload for signed-in users
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = '.csv';
+                const input = document.createElement("input");
+                input.type = "file";
+                input.accept = ".csv";
                 input.onchange = (e) => {
                   const file = (e.target as HTMLInputElement).files?.[0];
                   if (file) {
@@ -280,10 +287,10 @@ export default function DashboardPage() {
             <div className="flex-1 relative">
               <Input
                 placeholder={
-                  !user 
-                    ? "Sign in to start chatting..." 
-                    : contacts.length > 0 
-                      ? "Start chatting..." 
+                  !user
+                    ? "Sign in to start chatting..."
+                    : contacts.length > 0
+                      ? "Start chatting..."
                       : "Upload contacts to start chatting..."
                 }
                 value={message}
@@ -329,7 +336,9 @@ export default function DashboardPage() {
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>{rightSidebarOpen ? "Collapse Profile" : "Expand Profile"}</p>
+                <p>
+                  {rightSidebarOpen ? "Collapse Profile" : "Expand Profile"}
+                </p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

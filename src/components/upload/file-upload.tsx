@@ -12,7 +12,11 @@ interface FileUploadProps {
   className?: string;
 }
 
-export function FileUpload({ onFileUpload, isUploading, className }: FileUploadProps) {
+export function FileUpload({
+  onFileUpload,
+  isUploading,
+  className,
+}: FileUploadProps) {
   const [dragError, setDragError] = useState<string | null>(null);
 
   const onDrop = useCallback(
@@ -21,7 +25,7 @@ export function FileUpload({ onFileUpload, isUploading, className }: FileUploadP
 
       if (rejectedFiles.length > 0) {
         const rejection = rejectedFiles[0];
-        if (rejection.errors?.[0]?.code === 'file-invalid-type') {
+        if (rejection.errors?.[0]?.code === "file-invalid-type") {
           setDragError("Only CSV files are accepted");
         } else {
           setDragError("Format error with the file");
@@ -34,22 +38,23 @@ export function FileUpload({ onFileUpload, isUploading, className }: FileUploadP
         try {
           await onFileUpload(file);
         } catch (error) {
-          console.error('Upload error:', error);
+          console.error("Upload error:", error);
         }
       }
     },
-    [onFileUpload]
+    [onFileUpload],
   );
 
-  const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
-    onDrop,
-    accept: {
-      'text/csv': ['.csv'],
-      'application/csv': ['.csv'],
-    },
-    maxFiles: 1,
-    disabled: isUploading,
-  });
+  const { getRootProps, getInputProps, isDragActive, isDragReject } =
+    useDropzone({
+      onDrop,
+      accept: {
+        "text/csv": [".csv"],
+        "application/csv": [".csv"],
+      },
+      maxFiles: 1,
+      disabled: isUploading,
+    });
 
   return (
     <div className={className}>
@@ -61,11 +66,11 @@ export function FileUpload({ onFileUpload, isUploading, className }: FileUploadP
           isDragActive && !isDragReject && "border-primary bg-primary/10",
           isDragReject && "border-destructive bg-destructive/10",
           isUploading && "opacity-50 cursor-not-allowed",
-          "focus:outline-none focus:ring-2 focus:ring-primary/20"
+          "focus:outline-none focus:ring-2 focus:ring-primary/20",
         )}
       >
         <input {...getInputProps()} />
-        
+
         <div className="flex flex-col items-center text-center">
           {isUploading ? (
             <>

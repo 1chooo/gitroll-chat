@@ -4,7 +4,6 @@ import { useState } from "react";
 import { X, ExternalLink, Mail, Building, User, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Contact } from "@/hooks/use-csv-upload";
 
@@ -19,7 +18,7 @@ export function ContactCard({ contact, onClose, className }: ContactCardProps) {
 
   const handleClose = () => {
     setIsVisible(false);
-    setTimeout(onClose, 150); // 等待動畫完成
+    setTimeout(onClose, 150);
   };
 
   return (
@@ -28,7 +27,7 @@ export function ContactCard({ contact, onClose, className }: ContactCardProps) {
         "fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm",
         "transition-opacity duration-150",
         isVisible ? "opacity-100" : "opacity-0",
-        className
+        className,
       )}
       onClick={handleClose}
     >
@@ -36,7 +35,7 @@ export function ContactCard({ contact, onClose, className }: ContactCardProps) {
         className={cn(
           "w-full max-w-md bg-white dark:bg-neutral-800 shadow-xl",
           "transform transition-all duration-150",
-          isVisible ? "scale-100" : "scale-95"
+          isVisible ? "scale-100" : "scale-95",
         )}
         onClick={(e) => e.stopPropagation()}
       >
@@ -74,7 +73,7 @@ export function ContactCard({ contact, onClose, className }: ContactCardProps) {
                 <p className="text-sm font-medium text-foreground">
                   {contact.company}
                 </p>
-                <p className="text-xs text-muted-foreground">公司</p>
+                <p className="text-xs text-muted-foreground">Company</p>
               </div>
             </div>
           )}
@@ -89,13 +88,15 @@ export function ContactCard({ contact, onClose, className }: ContactCardProps) {
                 <p className="text-sm font-medium text-foreground break-all">
                   {contact.emailAddress}
                 </p>
-                <p className="text-xs text-muted-foreground">電子郵件</p>
+                <p className="text-xs text-muted-foreground">E-mail</p>
               </div>
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8"
-                onClick={() => window.open(`mailto:${contact.emailAddress}`, '_blank')}
+                className="h-8 w-8 cursor-pointer"
+                onClick={() =>
+                  window.open(`mailto:${contact.emailAddress}`, "_blank")
+                }
               >
                 <ExternalLink className="h-3 w-3" />
               </Button>
@@ -112,13 +113,13 @@ export function ContactCard({ contact, onClose, className }: ContactCardProps) {
                 <p className="text-sm font-medium text-foreground break-all">
                   {contact.url}
                 </p>
-                <p className="text-xs text-muted-foreground">個人資料連結</p>
+                <p className="text-xs text-muted-foreground">Linkedin URL</p>
               </div>
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8"
-                onClick={() => window.open(contact.url, '_blank')}
+                className="h-8 w-8 cursor-pointer"
+                onClick={() => window.open(contact.url, "_blank")}
               >
                 <ExternalLink className="h-3 w-3" />
               </Button>
@@ -135,7 +136,7 @@ export function ContactCard({ contact, onClose, className }: ContactCardProps) {
                 <p className="text-sm font-medium text-foreground">
                   {contact.connectedOn}
                 </p>
-                <p className="text-xs text-muted-foreground">連結日期</p>
+                <p className="text-xs text-muted-foreground">Connect on</p>
               </div>
             </div>
           )}
@@ -146,10 +147,10 @@ export function ContactCard({ contact, onClose, className }: ContactCardProps) {
               <User className="h-4 w-4 text-gray-600 dark:text-gray-400" />
             </div>
             <div className="flex-1">
-              <Badge variant="secondary" className="text-xs">
+              <p className="text-sm font-medium text-foreground">
                 {contact.firstName} {contact.lastName}
-              </Badge>
-              <p className="text-xs text-muted-foreground mt-1">完整姓名</p>
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">Full Name</p>
             </div>
           </div>
         </CardContent>

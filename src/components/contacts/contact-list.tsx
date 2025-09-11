@@ -15,18 +15,21 @@ interface ContactListProps {
   className?: string;
 }
 
-export function ContactList({ contacts, onClearContacts, className }: ContactListProps) {
+export function ContactList({
+  contacts,
+  onClearContacts,
+  className,
+}: ContactListProps) {
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
 
   if (contacts.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
         <User className="h-16 w-16 text-muted-foreground mb-4" />
-        <h3 className="font-medium text-foreground mb-2">
-          Still no contacts
-        </h3>
+        <h3 className="font-medium text-foreground mb-2">Still no contacts</h3>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Drag and drop a CSV file here or click the upload button to import contacts
+          Drag and drop a CSV file here or click the upload button to import
+          contacts
         </p>
       </div>
     );
@@ -60,7 +63,7 @@ export function ContactList({ contacts, onClearContacts, className }: ContactLis
               key={contact.id}
               className={cn(
                 "p-3 rounded-lg border bg-card hover:bg-accent cursor-pointer transition-colors",
-                "group relative"
+                "group relative",
               )}
               onClick={() => setSelectedContact(contact)}
             >
