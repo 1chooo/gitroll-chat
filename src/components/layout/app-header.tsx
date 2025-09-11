@@ -28,11 +28,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { useLogout } from "@/firebase/auth/logout";
 import { db } from "@/firebase/config";
 
-interface AppHeaderProps {
-  title: string;
-}
-
-export function AppHeader({ title }: AppHeaderProps) {
+export function AppHeader() {
   const { logout } = useLogout();
   const { user } = useAuthContext();
   const [userData, setUserData] = useState({
@@ -81,8 +77,8 @@ export function AppHeader({ title }: AppHeaderProps) {
         <div className="flex-shrink-0 lg:w-[300px]">
           <Link
             href={`/chat`}
-            aria-label="Home"
-            title="Home"
+            aria-label="chat with GitRoll"
+            title="Chat with GitRoll"
             className="flex items-center space-x-2"
           >
             <Image

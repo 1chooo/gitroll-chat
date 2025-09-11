@@ -32,7 +32,7 @@ export default function ContentLayout({
       >
         <Providers>
           <main>
-            <AppHeader title="GitRoll Chat" />
+            <AppHeader />
             {children}
           </main>
         </Providers>
