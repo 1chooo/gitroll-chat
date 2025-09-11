@@ -5,9 +5,15 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Building, User, Trash2 } from "lucide-react";
-import { ContactCard } from "./contact-card";
+import { ContactCard } from "@/components/contacts/contact-card";
 import { cn } from "@/lib/utils";
 import type { Contact } from "@/hooks/use-csv-upload";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface ContactListProps {
   contacts: Contact[];
@@ -44,15 +50,22 @@ export function ContactList({
             {contacts.length} contacts
           </Badge>
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onClearContacts}
-          className="h-8 w-8 text-muted-foreground hover:text-destructive"
-          title="Clear All Contacts"
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onClearContacts}
+                className="h-8 w-8 text-muted-foreground hover:text-destructive cursor-pointer"
+                title="Clear All Contacts"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">Clear All Contacts</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
 
       {/* Contact List with ScrollArea */}
