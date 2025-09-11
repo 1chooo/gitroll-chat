@@ -2,6 +2,7 @@
 
 import { AuthContextProvider } from "@/context/auth-context";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 function Providers({ children }: React.PropsWithChildren) {
   return (
@@ -11,7 +12,10 @@ function Providers({ children }: React.PropsWithChildren) {
       enableSystem
       disableTransitionOnChange
     >
-      <AuthContextProvider>{children}</AuthContextProvider>
+      <AuthContextProvider>
+        {children}
+        <Toaster />
+      </AuthContextProvider>
     </ThemeProvider>
   );
 }

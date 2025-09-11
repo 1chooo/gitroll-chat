@@ -5,10 +5,15 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   PanelLeft,
   PanelRight,
   Plus,
-  Search,
   Upload,
   Send,
   FileText,
@@ -24,13 +29,20 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useAuthContext } from "@/context/auth-context";
 import EmailVerification from "@/components/auth/email-verification";
+import { useCSVUpload } from "@/hooks/use-csv-upload";
+import { FileUpload } from "@/components/upload/file-upload";
+import { ContactList } from "@/components/contacts/contact-list";
+import { Toaster } from "sonner";
 
 export default function DashboardPage() {
   const { user, loading } = useAuthContext();
   const router = useRouter();
-  const [leftSidebarOpen, setLeftSidebarOpen] = useState(false);
+  const [leftSidebarOpen, setLeftSidebarOpen] = useState(true); // Default to open for better UX
   const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
   const [message, setMessage] = useState("");
+
+  // CSV upload functionality
+  const { contacts, isUploading, uploadCSV, clearContacts } = useCSVUpload();
 
   const isEmailVerified = user?.emailVerified || false;
 
@@ -78,7 +90,7 @@ export default function DashboardPage() {
         {/* Left Sidebar Header */}
         <div className="flex items-center justify-between p-4">
           {leftSidebarOpen && (
-            <h2 className="font-semibold text-foreground">Sources</h2>
+            <h2 className="font-semibold text-foreground">Connections</h2>
           )}
           <Button
             variant="ghost"
@@ -91,49 +103,81 @@ export default function DashboardPage() {
         </div>
 
         {/* Left Sidebar Content */}
-        <div className="flex-1 p-4">
+        <div className="flex-1 p-4 flex flex-col overflow-hidden">
           {leftSidebarOpen ? (
-            <div className="space-y-4">
-              <div className="flex gap-2">
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  className="flex-1"
-                  onClick={() => !user && router.push("/signin")}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add
-                </Button>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  className="flex-1"
-                  onClick={() => !user && router.push("/signin")}
-                >
-                  <Search className="h-4 w-4 mr-2" />
-                  Discover
-                </Button>
-              </div>
+            <div className="space-y-4 flex flex-col h-full overflow-hidden">
+              {/* Upload Section */}
+              {contacts.length === 0 ? (
+                <FileUpload
+                  onFileUpload={uploadCSV}
+                  isUploading={isUploading}
+                  className="mb-4"
+                />
+              ) : (
+                <div className="mb-4 flex-shrink-0">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    className="w-full"
+                    onClick={() => {
+                      const input = document.createElement('input');
+                      input.type = 'file';
+                      input.accept = '.csv';
+                      input.onchange = (e) => {
+                        const file = (e.target as HTMLInputElement).files?.[0];
+                        if (file) {
+                          uploadCSV(file);
+                        }
+                      };
+                      input.click();
+                    }}
+                    disabled={isUploading}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    {isUploading ? "Uploading..." : "Add More"}
+                  </Button>
+                </div>
+              )}
 
-              <div className="flex flex-col items-center justify-center py-12 text-center">
-                <FileText className="h-16 w-16 text-muted-foreground mb-4" />
-                <h3 className="font-medium text-foreground mb-2">
-                  Saved sources will appear here
-                </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  Click Add source above to add PDFs, websites, text, videos, or
-                  audio files. Or import a file directly from Google Drive.
-                </p>
+              {/* Contact List */}
+              <div className="flex-1 min-h-0">
+                <ContactList
+                  contacts={contacts}
+                  onClearContacts={clearContacts}
+                />
               </div>
             </div>
           ) : (
             <div className="flex flex-col items-center gap-4">
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <PanelLeft className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <Plus className="h-4 w-4" />
-              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-8 w-8 cursor-pointer"
+                      onClick={() => {
+                        const input = document.createElement('input');
+                        input.type = 'file';
+                        input.accept = '.csv';
+                        input.onchange = (e) => {
+                          const file = (e.target as HTMLInputElement).files?.[0];
+                          if (file) {
+                            uploadCSV(file);
+                          }
+                        };
+                        input.click();
+                      }}
+                      disabled={isUploading}
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Add Connections</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           )}
         </div>
@@ -189,16 +233,19 @@ export default function DashboardPage() {
           <div className="flex items-center gap-3">
             <div className="flex-1 relative">
               <Input
-                placeholder="Upload a source to get started"
+                placeholder={contacts.length > 0 ? "Start chatting..." : "Start chatting (upload contacts to enable)"}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className="pr-12 bg-white dark:bg-neutral-600 border-neutral-200 dark:border-neutral-500"
+                className="pr-16 bg-white dark:bg-neutral-600 border-neutral-200 dark:border-neutral-500"
+                disabled={contacts.length === 0}
               />
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
-                0 sources
-              </div>
             </div>
-            <Button size="icon" className="h-10 w-10" onClick={handleSubmit}>
+            <Button
+              size="icon"
+              className="h-10 w-10"
+              onClick={handleSubmit}
+              disabled={contacts.length === 0 || !message.trim()}
+            >
               <Send className="h-4 w-4" />
             </Button>
           </div>
@@ -341,6 +388,9 @@ export default function DashboardPage() {
           )}
         </div>
       </div>
+
+      {/* Toast notifications */}
+      <Toaster position="bottom-right" />
     </div>
   );
 }
