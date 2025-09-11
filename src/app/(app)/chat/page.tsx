@@ -117,11 +117,24 @@ export default function DashboardPage() {
             <div className="space-y-4 flex flex-col h-full overflow-hidden">
               {/* Upload Section */}
               {contacts.length === 0 ? (
-                <FileUpload
-                  onFileUpload={uploadCSV}
-                  isUploading={isUploading}
-                  className="mb-4"
-                />
+                user ? (
+                  <FileUpload
+                    onFileUpload={uploadCSV}
+                    isUploading={isUploading}
+                    className="mb-4"
+                  />
+                ) : (
+                  <div className="mb-4 text-center">
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      className="w-full"
+                      onClick={() => router.push("/signin")}
+                    >
+                      Sign in to upload contacts
+                    </Button>
+                  </div>
+                )
               ) : (
                 <div className="mb-4 flex-shrink-0">
                   <Button
@@ -129,6 +142,10 @@ export default function DashboardPage() {
                     size="sm"
                     className="w-full"
                     onClick={() => {
+                      if (!user) {
+                        router.push("/signin");
+                        return;
+                      }
                       const input = document.createElement('input');
                       input.type = 'file';
                       input.accept = '.csv';
@@ -166,6 +183,10 @@ export default function DashboardPage() {
                       size="icon"
                       className="h-8 w-8 cursor-pointer"
                       onClick={() => {
+                        if (!user) {
+                          router.push("/signin");
+                          return;
+                        }
                         const input = document.createElement('input');
                         input.type = 'file';
                         input.accept = '.csv';
@@ -183,7 +204,7 @@ export default function DashboardPage() {
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Add Connections</p>
+                    <p>{user ? "Add Connections" : "Sign in to add connections"}</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -230,9 +251,25 @@ export default function DashboardPage() {
             <Button
               variant="secondary"
               className="mb-8"
-              onClick={() => !user && router.push("/signin")}
+              onClick={() => {
+                if (!user) {
+                  router.push("/signin");
+                  return;
+                }
+                // Handle file upload for signed-in users
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.csv';
+                input.onchange = (e) => {
+                  const file = (e.target as HTMLInputElement).files?.[0];
+                  if (file) {
+                    uploadCSV(file);
+                  }
+                };
+                input.click();
+              }}
             >
-              Upload a source
+              {user ? "Upload a source" : "Sign in to upload"}
             </Button>
           </div>
         </div>
@@ -242,18 +279,24 @@ export default function DashboardPage() {
           <div className="flex items-center gap-3">
             <div className="flex-1 relative">
               <Input
-                placeholder={contacts.length > 0 ? "Start chatting..." : "Start chatting (upload contacts to enable)"}
+                placeholder={
+                  !user 
+                    ? "Sign in to start chatting..." 
+                    : contacts.length > 0 
+                      ? "Start chatting..." 
+                      : "Upload contacts to start chatting..."
+                }
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 className="pr-16 bg-white dark:bg-neutral-600 border-neutral-200 dark:border-neutral-500"
-                disabled={contacts.length === 0}
+                disabled={!user || contacts.length === 0}
               />
             </div>
             <Button
               size="icon"
               className="h-10 w-10"
               onClick={handleSubmit}
-              disabled={contacts.length === 0 || !message.trim()}
+              disabled={!user || contacts.length === 0 || !message.trim()}
             >
               <Send className="h-4 w-4" />
             </Button>
