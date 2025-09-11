@@ -92,14 +92,23 @@ export default function DashboardPage() {
           {leftSidebarOpen && (
             <h2 className="font-semibold text-foreground">Connections</h2>
           )}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setLeftSidebarOpen(!leftSidebarOpen)}
-            className="h-8 w-8"
-          >
-            <PanelLeft className="h-4 w-4" />
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setLeftSidebarOpen(!leftSidebarOpen)}
+                  className="h-8 w-8 cursor-pointer"
+                >
+                  <PanelLeft className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{leftSidebarOpen ? "Collapse Connections" : "Expand Connections"}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
 
         {/* Left Sidebar Content */}
@@ -152,9 +161,9 @@ export default function DashboardPage() {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       className="h-8 w-8 cursor-pointer"
                       onClick={() => {
                         const input = document.createElement('input');
@@ -262,16 +271,25 @@ export default function DashboardPage() {
         {/* Right Sidebar Header */}
         <div className="flex items-center justify-between p-4">
           {rightSidebarOpen && (
-            <h2 className="font-semibold text-foreground">Studio</h2>
+            <h2 className="font-semibold text-foreground">Profile</h2>
           )}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setRightSidebarOpen(!rightSidebarOpen)}
-            className="h-8 w-8"
-          >
-            <PanelRight className="h-4 w-4" />
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setRightSidebarOpen(!rightSidebarOpen)}
+                  className="h-8 w-8 cursor-pointer"
+                >
+                  <PanelRight className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{rightSidebarOpen ? "Collapse Profile" : "Expand Profile"}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
 
         {/* Right Sidebar Content */}
