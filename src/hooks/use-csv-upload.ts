@@ -26,12 +26,12 @@ export function useCSVUpload(): UseCSVUploadReturn {
 
   const uploadCSV = useCallback(async (file: File) => {
     if (!file.name.endsWith('.csv')) {
-      toast.error("請上傳 CSV 格式的檔案");
+      toast.error("Please upload a CSV file");
       return;
     }
 
     setIsUploading(true);
-    toast.loading("正在處理 CSV 檔案...", { id: "csv-upload" });
+    toast.loading("Processing CSV file...", { id: "csv-upload" });
 
     try {
       const text = await file.text();
@@ -40,7 +40,7 @@ export function useCSVUpload(): UseCSVUploadReturn {
         header: true,
         skipEmptyLines: true,
         transformHeader: (header: string) => {
-          // 處理常見的標題格式
+          // Handle common header variations
           const headerMap: Record<string, string> = {
             'first name': 'firstName',
             'firstname': 'firstName',
@@ -71,9 +71,9 @@ export function useCSVUpload(): UseCSVUploadReturn {
             const validContacts: Contact[] = [];
             
             results.data.forEach((row: any, index: number) => {
-              // 檢查必要的欄位
+              // Skip empty rows (require at least one of these fields)
               if (!row.firstName && !row.lastName && !row.company) {
-                return; // 跳過空的行
+                return;
               }
 
               const contact: Contact = {
@@ -91,25 +91,25 @@ export function useCSVUpload(): UseCSVUploadReturn {
             });
 
             if (validContacts.length === 0) {
-              toast.error("CSV 檔案中沒有找到有效的聯絡人資料", { id: "csv-upload" });
+              toast.error("No valid contacts found in the CSV file", { id: "csv-upload" });
               return;
             }
 
             setContacts(validContacts);
-            toast.success(`成功導入 ${validContacts.length} 位聯絡人`, { id: "csv-upload" });
+            toast.success(`Successfully imported ${validContacts.length} contacts`, { id: "csv-upload" });
           } catch (error) {
             console.error('Error processing CSV data:', error);
-            toast.error("處理 CSV 資料時發生錯誤", { id: "csv-upload" });
+            toast.error("An error occurred while processing the CSV data", { id: "csv-upload" });
           }
         },
         error: (error: any) => {
           console.error('Error parsing CSV:', error);
-          toast.error("解析 CSV 檔案時發生錯誤", { id: "csv-upload" });
+          toast.error("An error occurred while parsing the CSV file", { id: "csv-upload" });
         }
       });
     } catch (error) {
       console.error('Error reading file:', error);
-      toast.error("讀取檔案時發生錯誤", { id: "csv-upload" });
+      toast.error("An error occurred while reading the file", { id: "csv-upload" });
     } finally {
       setIsUploading(false);
     }
@@ -117,7 +117,7 @@ export function useCSVUpload(): UseCSVUploadReturn {
 
   const clearContacts = useCallback(() => {
     setContacts([]);
-    toast.success("已清除所有聯絡人");
+    toast.success("All contacts have been cleared");
   }, []);
 
   return {
