@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
-import EmailVerification from "../email-verification";
+import EmailVerification from "../../../components/auth/email-verification";
 import { useAuthContext } from "@/context/auth-context";
 import { useEmailVerification } from "@/firebase/auth/email-verification-link";
 
