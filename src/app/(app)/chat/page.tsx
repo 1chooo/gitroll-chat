@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useAuthContext } from "@/context/auth-context";
 import EmailVerification from "@/components/auth/email-verification";
 import { useCSVUpload } from "@/hooks/use-csv-upload";
+import { useChatAI } from "@/hooks/use-ai-chat";
 import { Toaster } from "sonner";
 import { LeftPanel } from "@/components/chat/left-panel";
 import { RightPanel } from "@/components/chat/right-panel";
@@ -17,13 +18,17 @@ export default function Chat() {
   // CSV upload functionality
   const { contacts, isUploading, uploadCSV, clearContacts } = useCSVUpload();
 
-  const isEmailVerified = user?.emailVerified || false;
+  // Chat AI functionality
+  const {
+    messages,
+    input,
+    handleInputChange,
+    handleSubmit,
+    isLoading: isChatLoading,
+    error: chatError,
+  } = useChatAI({ contacts });
 
-  const handleMessageSubmit = (message: string) => {
-    // Handle actual message submission here
-    console.log("Submitting message:", message);
-    // You can add more logic here for processing the message
-  };
+  const isEmailVerified = user?.emailVerified || false;
 
   if (loading) {
     return (
@@ -60,7 +65,12 @@ export default function Chat() {
         user={user}
         contacts={contacts}
         onFileUpload={uploadCSV}
-        onMessageSubmit={handleMessageSubmit}
+        messages={messages}
+        input={input}
+        onInputChange={handleInputChange}
+        onSubmit={handleSubmit}
+        isLoading={isChatLoading}
+        error={chatError}
       />
 
       {/* Right Sidebar */}

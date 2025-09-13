@@ -10,10 +10,9 @@ interface Message {
 
 interface UseChatAIProps {
   contacts?: Contact[];
-  userGoal?: string;
 }
 
-export function useChatAI({ contacts, userGoal }: UseChatAIProps = {}) {
+export function useChatAI({ contacts }: UseChatAIProps = {}) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -52,7 +51,6 @@ export function useChatAI({ contacts, userGoal }: UseChatAIProps = {}) {
             content: msg.content,
           })),
           contacts,
-          userGoal,
         }),
       });
 
