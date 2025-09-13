@@ -75,26 +75,119 @@ export function useLinkedInProfile(
   };
 }
 
-// Hook for multiple LinkedIn profiles
+// Hook for multiple LinkedIn profiles - FIXED VERSION
 export function useLinkedInProfiles(
   linkedinUrls: string[],
   options: UseLinkedInProfileOptions = {},
 ) {
-  const profiles = linkedinUrls.map((url) => useLinkedInProfile(url, options));
+  // Create a single SWR key for all URLs combined
+  const combinedKey = linkedinUrls.length > 0 
+    ? `linkedin-profiles:${linkedinUrls.join('|')}` 
+    : null;
 
-  const isLoading = profiles.some((profile) => profile.isLoading);
-  const isError = profiles.some((profile) => profile.isError);
-  const hasData = profiles.every((profile) => profile.profile);
+  // Custom fetcher that handles multiple URLs
+  const multiProfileFetcher = async (key: string): Promise<LinkedInProfile[]> => {
+    const urls = key.split(':')[1].split('|');
+    const promises = urls.map(url => {
+      const apiUrl = `/api/get-profile-data-by-url?url=${encodeURIComponent(url)}`;
+      return fetcher(apiUrl);
+    });
+    
+    // Use Promise.allSettled to handle individual failures
+    const results = await Promise.allSettled(promises);
+    
+    return results.map((result, index) => {
+      if (result.status === 'fulfilled') {
+        return result.value;
+      } else {
+        // Return error information in a structured way
+        throw new Error(`Failed to fetch profile for URL ${urls[index]}: ${result.reason.message}`);
+      }
+    });
+  };
+
+  const { data, error, isLoading, isValidating, mutate } = useSWR<
+    LinkedInProfile[],
+    Error
+  >(combinedKey, multiProfileFetcher, {
+    revalidateOnFocus: options.revalidateOnFocus ?? false,
+    revalidateOnReconnect: options.revalidateOnReconnect ?? true,
+    refreshInterval: options.refreshInterval ?? 0,
+    dedupingInterval: 3600000,
+    errorRetryCount: options.errorRetryCount ?? 3,
+    errorRetryInterval: options.errorRetryInterval ?? 5000,
+  });
 
   return {
-    profiles: profiles.map((p) => p.profile),
-    profileDetails: profiles,
+    profiles: data || [],
     isLoading,
-    isError,
-    hasData,
-    errors: profiles.filter((p) => p.error).map((p) => p.error),
-    refetchAll: () => profiles.forEach((p) => p.refetch()),
-    resetAll: () => profiles.forEach((p) => p.reset()),
+    isError: !!error,
+    error,
+    isValidating,
+    hasData: !!data && data.length === linkedinUrls.length,
+    refetchAll: () => mutate(),
+    resetAll: () => mutate(undefined, false),
+  };
+}
+
+// Alternative approach: Hook for multiple profiles with individual error handling
+export function useLinkedInProfilesIndividual(
+  linkedinUrls: string[],
+  options: UseLinkedInProfileOptions = {},
+) {
+  // Create individual SWR keys for each URL
+  const keys = linkedinUrls.map(url => 
+    url ? `/api/get-profile-data-by-url?url=${encodeURIComponent(url)}` : null
+  );
+
+  // Use a single SWR call with a custom fetcher that handles multiple keys
+  const multiKeyFetcher = async (): Promise<(LinkedInProfile | null)[]> => {
+    const promises = keys.map(async (key) => {
+      if (!key) return null;
+      try {
+        return await fetcher(key);
+      } catch (error) {
+        console.warn(`Failed to fetch profile for ${key}:`, error);
+        return null; // Return null for failed requests instead of throwing
+      }
+    });
+    
+    return Promise.all(promises);
+  };
+
+  const combinedKey = keys.filter(Boolean).length > 0 
+    ? `linkedin-profiles-individual:${keys.filter(Boolean).join('|')}` 
+    : null;
+
+  const { data, error, isLoading, isValidating, mutate } = useSWR<
+    (LinkedInProfile | null)[],
+    Error
+  >(combinedKey, multiKeyFetcher, {
+    revalidateOnFocus: options.revalidateOnFocus ?? false,
+    revalidateOnReconnect: options.revalidateOnReconnect ?? true,
+    refreshInterval: options.refreshInterval ?? 0,
+    dedupingInterval: 3600000,
+    errorRetryCount: options.errorRetryCount ?? 3,
+    errorRetryInterval: options.errorRetryInterval ?? 5000,
+  });
+
+  const profiles = data || [];
+  const successfulProfiles = profiles.filter((p): p is LinkedInProfile => p !== null);
+  const failedCount = profiles.filter(p => p === null).length;
+
+  return {
+    profiles: successfulProfiles,
+    allProfiles: profiles, // Includes null values for failed requests
+    isLoading,
+    isError: !!error,
+    error,
+    isValidating,
+    hasData: successfulProfiles.length > 0,
+    hasAllData: profiles.length === linkedinUrls.length && failedCount === 0,
+    successCount: successfulProfiles.length,
+    failedCount,
+    refetchAll: () => mutate(),
+    resetAll: () => mutate(undefined, false),
   };
 }
 
@@ -126,3 +219,4 @@ export async function fetchLinkedInProfile(
 // Type exports for consumers
 export type LinkedInProfileHookResult = ReturnType<typeof useLinkedInProfile>;
 export type LinkedInProfilesHookResult = ReturnType<typeof useLinkedInProfiles>;
+export type LinkedInProfilesIndividualHookResult = ReturnType<typeof useLinkedInProfilesIndividual>;
