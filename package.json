@@ -13,6 +13,7 @@
     "test:watch": "vitest --watch"
   },
   "dependencies": {
+    "@ai-sdk/azure": "^2.0.30",
     "@hookform/resolvers": "^5.2.1",
     "@next/third-parties": "^15.5.2",
     "@radix-ui/react-accordion": "^1.2.12",

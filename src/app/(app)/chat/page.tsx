@@ -34,7 +34,7 @@ import { FileUpload } from "@/components/upload/file-upload";
 import { ContactList } from "@/components/contacts/contact-list";
 import { Toaster } from "sonner";
 
-export default function DashboardPage() {
+export default function Chat() {
   const { user, loading } = useAuthContext();
   const router = useRouter();
   const [leftSidebarOpen, setLeftSidebarOpen] = useState(true); // Default to open for better UX
