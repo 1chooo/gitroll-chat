@@ -80,8 +80,8 @@ const SupportedLocaleSchema = z.object({
 
 // Main LinkedIn profile schema
 export const LinkedInProfileSchema = z.object({
-  urn: z.string(),
-  username: z.string(),
+  urn: z.string().optional(),
+  username: z.string().optional(),
   firstName: z.string(),
   lastName: z.string(),
   isCreator: z.boolean().optional(),
