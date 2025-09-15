@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createAzure } from "@ai-sdk/azure";
-import { streamText } from "ai";
+import { AzureOpenAI } from "openai";
 import { z } from "zod";
 
 // Request schema validation
@@ -36,9 +35,9 @@ function getAzureAI() {
     throw new Error("Azure OpenAI configuration is missing");
   }
 
-  return createAzure({
+  return new AzureOpenAI({
+    endpoint,
     apiKey,
-    baseURL: `${endpoint}/openai/deployments`,
     apiVersion,
   });
 }
@@ -107,22 +106,49 @@ ${contacts.map((contact, index) =>
     // Prepare enhanced system message with context
     const enhancedSystemPrompt = SYSTEM_PROMPT + contactContext + goalContext;
 
-    // Convert messages to the format expected by the AI SDK
-    const coreMessages = messages.map(msg => ({
-      role: msg.role as "user" | "assistant",
-      content: msg.content,
-    }));
+    // Convert messages to the format expected by OpenAI
+    const openaiMessages = [
+      { role: "system" as const, content: enhancedSystemPrompt },
+      ...messages.map(msg => ({
+        role: msg.role as "user" | "assistant",
+        content: msg.content,
+      }))
+    ];
 
-    // Stream the AI response
-    const result = await streamText({
-      model: azure("gpt-4o"), // Using gpt-4o as mentioned in your docs
-      system: enhancedSystemPrompt,
-      messages: coreMessages,
+    // Call Azure OpenAI
+    const result = await azure.chat.completions.create({
+      model: "gpt-4o", // Using gpt-4o as mentioned in your docs
+      messages: openaiMessages,
       temperature: 0.7,
+      stream: true,
+    });
+
+    // Create a streaming response
+    const encoder = new TextEncoder();
+    const stream = new ReadableStream({
+      async start(controller) {
+        try {
+          for await (const chunk of result) {
+            const content = chunk.choices[0]?.delta?.content || '';
+            if (content) {
+              controller.enqueue(encoder.encode(content));
+            }
+          }
+        } catch (error) {
+          controller.error(error);
+        } finally {
+          controller.close();
+        }
+      },
     });
 
     // Return streaming response
-    return result.toTextStreamResponse();
+    return new Response(stream, {
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Transfer-Encoding': 'chunked',
+      },
+    });
 
   } catch (error) {
     console.error("Error in AI chat API:", error);
