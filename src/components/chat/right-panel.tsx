@@ -1,7 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Tooltip,
   TooltipContent,
@@ -10,67 +10,21 @@ import {
 } from "@/components/ui/tooltip";
 import {
   PanelRight,
-  FileText,
-  BarChart3,
-  Video,
-  Brain,
-  FileSpreadsheet,
-  HelpCircle,
-  Edit3,
-  ChevronDown,
+  Users,
+  MessageCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { RecommendedContactCard } from "@/components/contacts/recommended-contact-card";
+import type { Contact } from "@/hooks/use-csv-upload";
 
 interface RightPanelProps {
   isOpen: boolean;
   onToggle: () => void;
   user: any; // You can replace this with proper user type
+  recommendedContacts?: Contact[];
 }
 
-export function RightPanel({ isOpen, onToggle, user }: RightPanelProps) {
-  const router = useRouter();
-
-  const handleToolClick = () => {
-    if (!user) {
-      router.push("/signin");
-    }
-    // Add specific tool functionality here
-  };
-
-  const studioTools = [
-    {
-      icon: BarChart3,
-      label: "Audio Overview",
-      onClick: handleToolClick,
-    },
-    {
-      icon: Video,
-      label: "Video Overview",
-      onClick: handleToolClick,
-    },
-    {
-      icon: Brain,
-      label: "Mind Map",
-      onClick: handleToolClick,
-    },
-    {
-      icon: FileSpreadsheet,
-      label: "Reports",
-      onClick: handleToolClick,
-      hasDropdown: true,
-    },
-    {
-      icon: FileText,
-      label: "Flashcards",
-      onClick: handleToolClick,
-    },
-    {
-      icon: HelpCircle,
-      label: "Quiz",
-      onClick: handleToolClick,
-    },
-  ];
-
+export function RightPanel({ isOpen, onToggle, user: _user, recommendedContacts = [] }: RightPanelProps) {
   return (
     <div
       className={cn(
@@ -79,9 +33,9 @@ export function RightPanel({ isOpen, onToggle, user }: RightPanelProps) {
       )}
     >
       {/* Right Sidebar Header */}
-      <div className="flex items-center justify-between p-4">
+      <div className="flex items-center justify-between p-4 flex-shrink-0">
         {isOpen && (
-          <h2 className="font-semibold text-foreground">Profile</h2>
+          <h2 className="font-semibold text-foreground">Recommended Profiles</h2>
         )}
         <TooltipProvider>
           <Tooltip>
@@ -96,86 +50,58 @@ export function RightPanel({ isOpen, onToggle, user }: RightPanelProps) {
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>{isOpen ? "Collapse Profile" : "Expand Profile"}</p>
+              <p>{isOpen ? "Collapse Profiles" : "Expand Profiles"}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
       </div>
 
       {/* Right Sidebar Content */}
-      <div className="flex-1 p-4">
+      <div className="flex-1 p-4 flex flex-col overflow-hidden">
         {isOpen ? (
-          <div className="space-y-6">
-            {/* Studio Tools Grid */}
-            <div className="grid grid-cols-2 gap-3">
-              {studioTools.map((tool, index) => {
-                const IconComponent = tool.icon;
-                return (
-                  <div
-                    key={index}
-                    className="flex flex-col items-center p-4 rounded-lg bg-neutral-50 dark:bg-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-600 cursor-pointer transition-colors"
-                    onClick={tool.onClick}
-                  >
-                    <IconComponent className="h-6 w-6 text-muted-foreground mb-2" />
-                    <div className="flex items-center gap-1">
-                      <span className="text-sm text-center text-muted-foreground">
-                        {tool.label}
-                      </span>
-                      {tool.hasDropdown && (
-                        <ChevronDown className="h-3 w-3 text-muted-foreground" />
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Studio Output Section */}
-            <div className="bg-neutral-50 dark:bg-neutral-700 rounded-lg p-6 mt-6">
-              <div className="flex flex-col items-center text-center py-8">
-                <Edit3 className="h-12 w-12 text-muted-foreground mb-4" />
-                <h3 className="font-medium text-foreground mb-2">
-                  Studio output will be saved here.
-                </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-6">
-                  After adding sources, click to add Audio Overview, Study
-                  Guide, Mind Map, and more!
+          <div className="flex flex-col h-full overflow-hidden">
+            {recommendedContacts.length > 0 ? (
+              /* Recommended Contacts List */
+              <ScrollArea className="flex-1 min-h-0 w-full">
+                <div className="space-y-3 pr-2">
+                  {recommendedContacts.map((contact, index) => (
+                    <RecommendedContactCard
+                      key={`${contact.id}-${index}`}
+                      contact={contact}
+                    />
+                  ))}
+                </div>
+              </ScrollArea>
+            ) : (
+              /* Empty State */
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <MessageCircle className="h-16 w-16 text-muted-foreground mb-4" />
+                <h3 className="font-medium text-foreground mb-2">Start a conversation</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Ask the AI assistant about your networking goals and I'll recommend relevant contacts from your connections.
                 </p>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={handleToolClick}
-                >
-                  <Edit3 className="h-4 w-4 mr-2" />
-                  Add note
-                </Button>
               </div>
-            </div>
+            )}
           </div>
         ) : (
+          /* Collapsed State */
           <div className="flex flex-col items-center gap-4">
-            {studioTools.map((tool, index) => {
-              const IconComponent = tool.icon;
-              return (
-                <TooltipProvider key={index}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8"
-                        onClick={tool.onClick}
-                      >
-                        <IconComponent className="h-4 w-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>{tool.label}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              );
-            })}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                  >
+                    <Users className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Recommended Profiles</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         )}
       </div>

@@ -26,6 +26,7 @@ export default function Chat() {
     handleSubmit,
     isLoading: isChatLoading,
     error: chatError,
+    recommendedContacts,
   } = useChatAI({ contacts });
 
   const isEmailVerified = user?.emailVerified || false;
@@ -78,6 +79,7 @@ export default function Chat() {
         isOpen={rightSidebarOpen}
         onToggle={() => setRightSidebarOpen(!rightSidebarOpen)}
         user={user}
+        recommendedContacts={recommendedContacts}
       />
 
       {/* Toast notifications */}

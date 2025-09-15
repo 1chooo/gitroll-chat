@@ -17,6 +17,34 @@ export function useChatAI({ contacts }: UseChatAIProps = {}) {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [recommendedContacts, setRecommendedContacts] = useState<Contact[]>([]);
+
+  // Function to extract recommended contacts from AI response
+  const extractRecommendedContacts = (content: string): Contact[] => {
+    if (!contacts || contacts.length === 0) return [];
+
+    const recommended: Contact[] = [];
+    const lowerContent = content.toLowerCase();
+
+    // Look for contact names mentioned in the AI response
+    contacts.forEach(contact => {
+      const fullName = `${contact.firstName} ${contact.lastName}`.toLowerCase();
+      const firstName = contact.firstName.toLowerCase();
+      const lastName = contact.lastName.toLowerCase();
+      const company = contact.company?.toLowerCase() || '';
+
+      // Check if the contact is mentioned in the response
+      if (
+        lowerContent.includes(fullName) ||
+        (lowerContent.includes(firstName) && lowerContent.includes(lastName)) ||
+        (company && lowerContent.includes(company) && lowerContent.includes(firstName))
+      ) {
+        recommended.push(contact);
+      }
+    });
+
+    return recommended;
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
@@ -74,6 +102,7 @@ export function useChatAI({ contacts }: UseChatAIProps = {}) {
 
       const decoder = new TextDecoder();
       let done = false;
+      let fullContent = "";
 
       while (!done) {
         const { value, done: doneReading } = await reader.read();
@@ -81,6 +110,7 @@ export function useChatAI({ contacts }: UseChatAIProps = {}) {
 
         if (value) {
           const chunk = decoder.decode(value);
+          fullContent += chunk;
           
           setMessages(prev => 
             prev.map(msg => 
@@ -91,6 +121,10 @@ export function useChatAI({ contacts }: UseChatAIProps = {}) {
           );
         }
       }
+
+      // After streaming is complete, extract recommended contacts
+      const recommended = extractRecommendedContacts(fullContent);
+      setRecommendedContacts(recommended);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "An unexpected error occurred";
       setError(errorMessage);
@@ -105,6 +139,7 @@ export function useChatAI({ contacts }: UseChatAIProps = {}) {
   const clearMessages = () => {
     setMessages([]);
     setError(null);
+    setRecommendedContacts([]);
   };
 
   return {
@@ -115,6 +150,7 @@ export function useChatAI({ contacts }: UseChatAIProps = {}) {
     isLoading,
     error,
     clearMessages,
+    recommendedContacts,
   };
 }
 

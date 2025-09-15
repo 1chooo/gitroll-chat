@@ -84,7 +84,7 @@ export function ContactList({
                 <div className="flex-1 min-w-0">
                   {/* Name */}
                   <div className="flex items-center gap-2 mb-1">
-                    <h4 className="font-medium text-sm text-foreground truncate">
+                    <h4 className="font-medium text-sm text-foreground">
                       {contact.firstName} {contact.lastName}
                     </h4>
                     {!contact.firstName && !contact.lastName && (
@@ -98,7 +98,7 @@ export function ContactList({
                   {contact.company && (
                     <div className="flex items-center gap-1.5">
                       <Building className="h-3 w-3 text-muted-foreground flex-shrink-0" />
-                      <span className="text-xs text-muted-foreground truncate">
+                      <span className="text-xs text-muted-foreground">
                         {contact.company}
                       </span>
                     </div>
@@ -107,7 +107,7 @@ export function ContactList({
                   {/* Position */}
                   {contact.position && (
                     <div className="mt-1">
-                      <span className="text-xs text-muted-foreground/80 truncate block">
+                      <span className="text-xs text-muted-foreground/80 block">
                         {contact.position}
                       </span>
                     </div>
@@ -123,7 +123,7 @@ export function ContactList({
               {/* Email preview */}
               {contact.emailAddress && (
                 <div className="mt-2 pt-2 border-t border-border/50">
-                  <span className="text-xs text-muted-foreground truncate block">
+                  <span className="text-xs text-muted-foreground block">
                     {contact.emailAddress}
                   </span>
                 </div>
