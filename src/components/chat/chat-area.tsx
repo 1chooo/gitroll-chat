@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,21 @@ import { Input } from "@/components/ui/input";
 import { Upload, Send, User, Bot, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { Contact } from "@/hooks/use-csv-upload";
+import {
+  parseItalic,
+  parseBold,
+  parseHeadings,
+  parseStrikethrough,
+  parseBlockquote,
+  parseInlineCode,
+  parseHorizontalRule,
+  parseHighlight,
+  parseLinks,
+  parseImages,
+  parseUnorderedList,
+} from "@/lib/markdown-parser";
+
+import { cn } from "@/lib/utils";
 
 interface Message {
   id: string;
@@ -26,6 +42,52 @@ interface ChatAreaProps {
   isLoading?: boolean;
   error?: string | null;
 }
+
+const parseMarkdown = (markdownText: string) => {
+  const unorderedListProcessedText = parseUnorderedList(markdownText);
+  const lines = unorderedListProcessedText.split("\n");
+
+  return lines.map((line, index) => {
+    const key = `line-${index}`;
+
+    if (
+      line.startsWith("<li>") ||
+      line.startsWith("</ul>") ||
+      line.startsWith("<ul>")
+    ) {
+      return (
+        <div
+          className={cn("markdown")}
+          key={key}
+          dangerouslySetInnerHTML={{ __html: line }}
+        />
+      );
+    }
+
+    const element =
+      parseHorizontalRule(line) || parseBlockquote(line) || parseHeadings(line);
+
+    if (element) {
+      return React.cloneElement(element, { key });
+    }
+
+    let parsedLine = parseBold(line);
+    parsedLine = parseItalic(parsedLine);
+    parsedLine = parseStrikethrough(parsedLine);
+    parsedLine = parseInlineCode(parsedLine);
+    parsedLine = parseHighlight(parsedLine);
+    parsedLine = parseImages(parsedLine);
+    parsedLine = parseLinks(parsedLine);
+
+    return (
+      <p
+        className={cn("markdown")}
+        key={key}
+        dangerouslySetInnerHTML={{ __html: parsedLine }}
+      />
+    );
+  });
+};
 
 export function ChatArea({
   user,
@@ -180,7 +242,7 @@ export function ChatArea({
                     </div>
                     <div className="flex-1">
                       <div className="text-sm whitespace-pre-wrap">
-                        {message.content}
+                        {parseMarkdown(message.content)}
                       </div>
                       <div className="text-xs opacity-70 mt-1">
                         {message.timestamp.toLocaleTimeString()}
